@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "365726972662",
+    "project_id": "kamlans",
+    "storage_bucket": "kamlans.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365726972662:android:8582b9e9973b43cdb78ad7",
+        "android_client_info": {
+          "package_name": "com.example.firebasetuts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "365726972662-711r5rlav3dprvist018mfdp8b0cqodk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtzfTe1kkReQzqjmToIClXjw3HWVcyYEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "365726972662-711r5rlav3dprvist018mfdp8b0cqodk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
