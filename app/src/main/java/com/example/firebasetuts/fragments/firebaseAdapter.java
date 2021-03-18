@@ -30,8 +30,7 @@ public class firebaseAdapter extends FirestoreRecyclerAdapter<Model, firebaseAda
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull Model model) {
 
-        holder.textView.setText(model.getUid());
-        holder.textView2.setText(model.getLoginInfo());
+
     }
 
     @NonNull

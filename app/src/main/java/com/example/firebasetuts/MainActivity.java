@@ -1,26 +1,59 @@
 package com.example.firebasetuts;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import com.bumptech.glide.Glide;
+import com.example.firebasetuts.fragments.Model;
 import com.firebase.ui.auth.AuthUI;
-import com.google.firebase.auth.FirebaseAuth;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager2.widget.ViewPager2;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import android.util.Log;
 
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements FirebaseAuth.AuthStateListener{
+import java.text.BreakIterator;
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "tag" ;
-    private ViewPager2 viewPager2;
+    private RecyclerView recyclerView;
+    private Query query;
+    public TextView first , last;
+    private ImageView img;
+    FirestoreRecyclerAdapter adapter;
+    ArrayList<Model> arrayList = new ArrayList<Model>();
+
+
 
 
 
@@ -31,6 +64,55 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        recyclerView = findViewById(R.id.recView);
+
+        query = FirebaseFirestore.getInstance().collection("users");
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference().child("dp").child("hospital.png");
+
+
+
+
+
+        FirestoreRecyclerOptions<Model> options  = new FirestoreRecyclerOptions.Builder<Model>().setQuery(query , Model.class).build();
+
+
+
+        adapter = new FirestoreRecyclerAdapter<Model , ModelHolder>(options)
+        {
+           @NonNull
+           @Override
+           public ModelHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+               View view = LayoutInflater.from(parent.getContext())
+                       .inflate(R.layout.single_row, parent, false);
+
+               return new ModelHolder(view);
+           }
+
+           @Override
+           protected void onBindViewHolder(@NonNull ModelHolder holder, int position, @NonNull Model model) {
+
+               first.setText(model.getFirst());
+               last.setText(model.getLast());
+               Glide.with(getApplicationContext())
+                       .load(model.getImg())
+                       .into(img);
+
+               Log.d(TAG, "onBindViewHolder: "+model.getFirst());
+               Log.d(TAG, "onBindViewHolder: "+model.getLast());
+           }
+
+           @Override
+           public void onError(FirebaseFirestoreException e) {
+               Log.e("error", e.getMessage());
+           }
+       };
+
+       adapter.notifyDataSetChanged();
+       recyclerView.setAdapter(adapter);
+       recyclerView.setLayoutManager( new LinearLayoutManager(this , LinearLayoutManager.HORIZONTAL , false));
 
 
     }
@@ -69,23 +151,26 @@ public class MainActivity extends AppCompatActivity implements FirebaseAuth.Auth
     @Override
     protected void onStart() {
         super.onStart();
+        adapter.startListening();
 
-        FirebaseAuth.getInstance().addAuthStateListener(this);
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        FirebaseAuth.getInstance().removeAuthStateListener(this);
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
     }
 
-    @Override
-    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+    private class ModelHolder extends RecyclerView.ViewHolder {
 
-        if (FirebaseAuth.getInstance().getCurrentUser() == null){
-            startActivity( new Intent( getApplicationContext() , LoginRegisterActivity.class));
-            finish();
+
+        public ModelHolder(@NonNull View itemView) {
+            super(itemView);
+
+            first = itemView.findViewById(R.id.textView);
+            last = itemView.findViewById(R.id.textView2);
+            img = itemView.findViewById(R.id.imageView);
         }
     }
 }
+

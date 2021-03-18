@@ -2,41 +2,41 @@ package com.example.firebasetuts.fragments;
 
 public class Model {
 
-    private String Uid ;
-    private String loginInfo;
-    private int imageView;
+    private String first ;
+    private String last;
+    private  String img;
 
     public Model(){
 
     }
 
-    public Model(String uid, String loginInfo ) {
-        Uid = uid;
-        this.loginInfo = loginInfo;
-
+    public Model(String first, String last, String img) {
+        this.first = first;
+        this.last = last;
+        this.img = img;
     }
 
-    public int getImageView() {
-        return imageView;
+    public String getFirst() {
+        return first;
     }
 
-    public void setImageView(int imageView) {
-        this.imageView = imageView;
+    public void setFirst(String first) {
+        this.first = first;
     }
 
-    public String getUid() {
-        return Uid;
+    public String getLast() {
+        return last;
     }
 
-    public void setUid(String uid) {
-        Uid = uid;
+    public void setLast(String last) {
+        this.last = last;
     }
 
-    public String getLoginInfo() {
-        return loginInfo;
+    public String getImg() {
+        return img;
     }
 
-    public void setLoginInfo(String loginInfo) {
-        this.loginInfo = loginInfo;
+    public void setImg(String img) {
+        this.img = img;
     }
 }

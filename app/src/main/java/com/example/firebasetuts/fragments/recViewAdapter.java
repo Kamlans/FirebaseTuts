@@ -9,18 +9,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.firebasetuts.R;
+import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class recViewAdapter extends RecyclerView.Adapter<recViewAdapter.ViewHolder> {
 
-    List<Model> list ;
+    ArrayList<Model> list ;
 
-    public recViewAdapter(List<Model> list) {
+    public recViewAdapter(ArrayList<Model> list) {
         this.list = list;
     }
-
 
     @NonNull
     @Override
@@ -34,9 +36,13 @@ public class recViewAdapter extends RecyclerView.Adapter<recViewAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        holder.textView1.setText(list.get(position).getUid());
-        holder.textView2.setText(list.get(position).getLoginInfo());
-        //holder.imageView.setImageResource(list.get(position).getImageView());
+
+
+        holder.textView1.setText(list.get(position).getFirst());
+        holder.textView2.setText(list.get(position).getLast());
+        Picasso.get().load(list.get(position).getImg()).into(holder.imageView);
+
+
     }
 
     @Override
@@ -53,7 +59,7 @@ public class recViewAdapter extends RecyclerView.Adapter<recViewAdapter.ViewHold
             super(itemView);
 
 
-             //imageView = itemView.findViewById(R.id.imageView);
+             imageView = itemView.findViewById(R.id.imageView);
              textView1 = itemView.findViewById(R.id.textView);
              textView2 = itemView.findViewById(R.id.textView2);
 
