@@ -29,6 +29,8 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import android.view.LayoutInflater;
@@ -52,10 +54,20 @@ public class MainActivity extends AppCompatActivity {
     private ImageView img;
     FirestoreRecyclerAdapter adapter;
     ArrayList<Model> arrayList = new ArrayList<Model>();
+    LinearLayoutManager layoutManager;
 
 
 
-
+    final int duration = 10;
+    final int pixelsToMove = 30;
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
+    private final Runnable SCROLLING_RUNNABLE = new Runnable() {
+        @Override
+        public void run() {
+            recyclerView.smoothScrollBy(pixelsToMove, 0);
+            mHandler.postDelayed(this, duration);
+        }
+    };
 
 
     @Override
@@ -112,9 +124,29 @@ public class MainActivity extends AppCompatActivity {
 
        adapter.notifyDataSetChanged();
        recyclerView.setAdapter(adapter);
-       recyclerView.setLayoutManager( new LinearLayoutManager(this , LinearLayoutManager.HORIZONTAL , false));
+       layoutManager = new LinearLayoutManager(this , LinearLayoutManager.HORIZONTAL , false);
+       recyclerView.setLayoutManager( layoutManager);
 
-
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int lastItem = layoutManager.findLastCompletelyVisibleItemPosition();
+                if(lastItem == layoutManager.getItemCount()-1){
+                    mHandler.removeCallbacks(SCROLLING_RUNNABLE);
+                    Handler postHandler = new Handler();
+                    postHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerView.setAdapter(null);
+                            recyclerView.setAdapter(adapter);
+                            mHandler.postDelayed(SCROLLING_RUNNABLE, 2000);
+                        }
+                    }, 2000);
+                }
+            }
+        });
+        mHandler.postDelayed(SCROLLING_RUNNABLE, 2000);
     }
 
 
